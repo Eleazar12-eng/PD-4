@@ -1,0 +1,154 @@
+classDiagram
+    direction TB
+
+    class Main {
+        +main(String[])$ void
+    }
+
+    class Stand {
+        -int numero
+        -double ancho
+        -double largo
+        -double costoPorM2
+        -EstadoStand estado
+        +calcularArea() double
+        +calcularCostoTotal() double
+    }
+    class Editorial {
+        -int id
+        -String nombre
+        -String correo
+        -boolean aprobada
+    }
+    class Reservacion {
+        -String identificador
+        -Editorial editorial
+        -Stand stand
+        -LocalDate fechaReservacion
+        -LocalDate fechaLimitePago
+        -double montoTotal
+        -double montoPagado
+        +getMontoPendiente() double
+    }
+    class EstadoStand {
+        <<enumeration>>
+        DISPONIBLE
+        RESERVADO
+        OCUPADO
+        BLOQUEADO
+        +getColor() String
+        +texto() String
+    }
+    class InfoConexion {
+        -String url
+        -String producto
+        -String version
+        -String driver
+    }
+
+    class ConexionBD {
+        -String url
+        -String usuario
+        -String clave
+        +desdePropiedades()$ ConexionBD
+        +obtener() Connection
+        +probar() InfoConexion
+    }
+    class InicializadorBD {
+        +crearEsquemaYDatos() void
+    }
+    class BDException {
+        <<RuntimeException>>
+    }
+    class StandDAO {
+        <<interface>>
+        +listarTodos() List~Stand~
+        +buscarPorNumero(int) Stand
+    }
+    class EditorialDAO {
+        <<interface>>
+        +listarTodas() List~Editorial~
+        +buscarPorId(int) Editorial
+    }
+    class ReservacionDAO {
+        <<interface>>
+        +listarTodas() List~Reservacion~
+        +buscarPorIdentificador(String) Reservacion
+    }
+    class StandDAOJdbc
+    class EditorialDAOJdbc
+    class ReservacionDAOJdbc
+
+    class ConexionControlador {
+        +verificarConexion() boolean
+        +prepararEsquema() boolean
+    }
+    class StandControlador {
+        +mostrarLista() boolean
+        +mostrarDetalle(int) boolean
+    }
+    class EditorialControlador {
+        +mostrarLista() boolean
+        +mostrarDetalle(int) boolean
+    }
+    class ReservacionControlador {
+        +mostrarLista() boolean
+        +mostrarDetalle(String) boolean
+    }
+
+    class VistaConsola {
+        <<abstract>>
+        #PrintStream out
+        +mostrarError(String) void
+        +mostrarNoEncontrado(String) void
+    }
+    class VistaConexion {
+        +mostrarExito(InfoConexion) void
+        +mostrarEsquemaListo() void
+    }
+    class VistaStands {
+        +mostrarLista(List~Stand~) void
+        +mostrarDetalle(Stand) void
+    }
+    class VistaEditoriales {
+        +mostrarLista(List~Editorial~) void
+        +mostrarDetalle(Editorial) void
+    }
+    class VistaReservaciones {
+        +mostrarLista(List~Reservacion~) void
+        +mostrarDetalle(Reservacion) void
+    }
+
+    Stand --> EstadoStand
+    Reservacion --> Editorial
+    Reservacion --> Stand
+
+    StandDAO <|.. StandDAOJdbc
+    EditorialDAO <|.. EditorialDAOJdbc
+    ReservacionDAO <|.. ReservacionDAOJdbc
+    StandDAOJdbc --> ConexionBD
+    EditorialDAOJdbc --> ConexionBD
+    ReservacionDAOJdbc --> ConexionBD
+    InicializadorBD --> ConexionBD
+    ConexionBD ..> InfoConexion : crea
+    StandDAOJdbc ..> BDException : lanza
+
+    StandControlador --> StandDAO
+    StandControlador --> VistaStands
+    EditorialControlador --> EditorialDAO
+    EditorialControlador --> VistaEditoriales
+    ReservacionControlador --> ReservacionDAO
+    ReservacionControlador --> VistaReservaciones
+    ConexionControlador --> ConexionBD
+    ConexionControlador --> InicializadorBD
+    ConexionControlador --> VistaConexion
+
+    VistaConsola <|-- VistaConexion
+    VistaConsola <|-- VistaStands
+    VistaConsola <|-- VistaEditoriales
+    VistaConsola <|-- VistaReservaciones
+
+    Main ..> ConexionControlador
+    Main ..> StandControlador
+    Main ..> EditorialControlador
+    Main ..> ReservacionControlador

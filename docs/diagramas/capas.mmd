@@ -1,0 +1,43 @@
+flowchart TB
+    MAIN["<b>Main</b><br/>ensambla las capas y las ejecuta"]
+
+    subgraph PRES["VISTA (paquete filey.vista)"]
+        direction LR
+        V1["VistaStands"]
+        V2["VistaEditoriales"]
+        V3["VistaReservaciones"]
+        V4["VistaConexion"]
+    end
+
+    subgraph CTRL["CONTROLADOR (paquete filey.controlador)"]
+        direction LR
+        C1["StandControlador"]
+        C2["EditorialControlador"]
+        C3["ReservacionControlador"]
+        C4["ConexionControlador"]
+    end
+
+    subgraph MOD["MODELO (paquete filey.modelo)"]
+        direction LR
+        M1["Stand"]
+        M2["Editorial"]
+        M3["Reservacion"]
+        M4["EstadoStand / InfoConexion"]
+    end
+
+    subgraph BD["CAPA DE BD (paquete filey.bd)"]
+        direction TB
+        D1["Interfaces DAO<br/>StandDAO, EditorialDAO, ReservacionDAO"]
+        D2["Implementaciones JDBC<br/>filey.bd.jdbc"]
+        D3["ConexionBD + InicializadorBD"]
+        D1 --> D2 --> D3
+    end
+
+    DB[("H2 en memoria<br/>STAND, EDITORIAL, RESERVACION")]
+
+    MAIN --> CTRL
+    CTRL -->|"entrega los datos"| PRES
+    CTRL -->|"pide los datos"| D1
+    D3 -->|"JDBC"| DB
+    D2 -.->|"crea objetos"| MOD
+    PRES -.->|"solo lee"| MOD

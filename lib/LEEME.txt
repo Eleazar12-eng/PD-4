@@ -1,0 +1,20 @@
+DRIVER JDBC DE H2
+=================
+
+El programa necesita el jar de H2 en esta carpeta para conectarse a la base de datos.
+
+1. Descarga h2-2.2.224.jar desde Maven Central:
+   https://repo1.maven.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar
+   (o busca "h2 database" en https://mvnrepository.com y elige la 2.2.224)
+
+2. Copia el archivo en esta carpeta (lib/), de modo que quede:
+   lib/h2-2.2.224.jar
+
+3. Ejecuta con el classpath que incluye lib/:
+   java -cp "out;lib/*" filey.Main          (Windows)
+   java -cp "out:lib/*" filey.Main          (Linux / Mac)
+
+Recomendado: sube el jar al repositorio (pesa unos 2.5 MB) para que quien clone
+el proyecto pueda ejecutarlo sin descargar nada. El .gitignore ya lo permite.
+
+Si ves "No suitable driver found", el jar no está en el classpath.

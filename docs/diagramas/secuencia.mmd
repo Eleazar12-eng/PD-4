@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant Main
+    participant C as StandControlador
+    participant D as StandDAOJdbc
+    participant X as ConexionBD
+    participant DB as H2 (BD)
+    participant V as VistaStands
+
+    Main->>C: mostrarLista()
+    C->>D: listarTodos()
+    D->>X: obtener()
+    X->>DB: DriverManager.getConnection(url)
+    DB-->>X: Connection
+    X-->>D: Connection
+    D->>DB: SELECT ... FROM stand ORDER BY numero
+    DB-->>D: ResultSet (filas)
+    loop por cada fila
+        D->>D: mapear(rs) crea un Stand
+    end
+    D->>D: ordenar por area
+    D-->>C: List de Stand
+    C->>V: mostrarLista(stands)
+    V-->>Main: imprime la tabla en consola

@@ -1,0 +1,28 @@
+erDiagram
+    EDITORIAL ||--o{ RESERVACION : "hace"
+    STAND ||--o{ RESERVACION : "es reservado en"
+
+    EDITORIAL {
+        int id PK
+        varchar nombre
+        varchar correo
+        boolean aprobada
+    }
+
+    STAND {
+        int numero PK
+        double ancho
+        double largo
+        double costo_m2
+        varchar estado "DISPONIBLE, RESERVADO, OCUPADO, BLOQUEADO"
+    }
+
+    RESERVACION {
+        varchar identificador PK
+        int editorial_id FK
+        int stand_numero FK
+        date fecha_reservacion
+        date fecha_limite_pago
+        double monto_total
+        double monto_pagado
+    }
